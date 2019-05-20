@@ -12,13 +12,17 @@
         <h1 class="display-5">How would you classify this image?</h1>
         <img class="img-thumbnail" style="height: 60%" src=<%= `/images/${image}` %> >
         <br>
-        <div class="row">
+        <form style="margin-left: 15px" class="form" method="GET" action=<%= `/next/${image}` %> >
+            <div class="form-group">
             <% classes.forEach((className) => { %>
-            <form style="margin-left: 15px" class="form" method="POST" action=<%= `${image}/${className}` %> >
-                <button class="btn" name="className"><%= className %></button>
-            </form>
-            <%}) %>
+            <div class="form-check">
+                <input id="class-name" type="checkbox" class="form-check-input" name=<%= className %>>
+                <label class="form-check-label" for=<%= className %>><%= className %></label>
             </div>
+            <%}) %>
+            <button class="btn" type="submit">Next</button>
+        </div>
+        </form>
     </div>
         
     </body>
