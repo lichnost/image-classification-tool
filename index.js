@@ -24,7 +24,7 @@ async function setup(){
                         console.log(file);
                         db.run('INSERT INTO images (name, classified) VALUES (?, ?)', [file, false], (result, err) => {
                             if(err){
-                                console.log(`DB Initialization Error: ${err}`)
+                                console.log('DB Initialization Error: ${err}');
                             }
                         });
                     }
@@ -47,7 +47,7 @@ let config_file = fs.readFileSync('config.json');
 let config = JSON.parse(config_file);
 
 app.get('/', (req, res) => {
-    db.get('SELECT name FROM images WHERE classified = 0 LIMIT 1', (err, result) => {
+    db.get('SELECT name FROM images WHERE classified = 0 ORDER BY name DESC LIMIT 1', (err, result) => {
         if (err) {
             res.send(err);
         }

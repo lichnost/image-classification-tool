@@ -1,6 +1,6 @@
 {
     "classes": [
-    "Cat",
-    "Dog"
+    {"name": "Cat", "display": "Кошка", "default": true},
+    {"name": "Dog", "display": "Собака", "default": false}
     ]
 }
