@@ -5,7 +5,7 @@ const port = 8090;
 let fs = require( 'fs' );
 let path = require( 'path' );
 
-var config_file_path = process.argv[0];
+var config_file_path = process.argv[2];
 if (!config_file_path) {
     config_file_path = 'config.json';
 }
