@@ -5,8 +5,12 @@ const port = 8090;
 let fs = require( 'fs' );
 let path = require( 'path' );
 
+var config_file_path = process.argv[0];
+if (!config_file_path) {
+    config_file_path = 'config.json';
+}
 
-let config_file = fs.readFileSync('config.json');
+let config_file = fs.readFileSync(config_file_path);
 let config = JSON.parse(config_file);
 
 let images_path = config.images_path;

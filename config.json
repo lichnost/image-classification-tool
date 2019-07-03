@@ -1,6 +1,8 @@
 {
+    "images_path": "/home/lichnost/programming/work/ml/cumface/facial_data/dataset/align-big-landmarks",
+    "db_path": "/home/lichnost/programming/work/ml/cumface/facial_data/dataset/images.db",
     "classes": [
-    {"name": "Cat", "display": "Кошка", "default": true},
-    {"name": "Dog", "display": "Собака", "default": false}
+    {"name": "Cum", "display": "Cum", "default": true},
+    {"name": "Incorrect", "display": "Incorrect", "default": false}
     ]
 }
