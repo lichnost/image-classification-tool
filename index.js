@@ -1,12 +1,24 @@
 const express = require('express');
 const app = express();
-const port = 8080;
+const port = 8090;
 
 let fs = require( 'fs' );
 let path = require( 'path' );
 
+
+let config_file = fs.readFileSync('config.json');
+let config = JSON.parse(config_file);
+
+let images_path = config.images_path;
+let db_path = config.db_path;
+
 const sqlite3 = require('sqlite3');
-let db = new sqlite3.Database('images.db');
+let db = new sqlite3.Database(db_path);
+
+if (fs.existsSync('./images')) {
+    fs.unlinkSync('./images');
+}
+fs.symlinkSync(images_path, './images');
 
 async function setup(){
     await db.run('CREATE TABLE IF NOT EXISTS images (name TEXT UNIQUE, classes TEXT, complete DATE, classified BOOLEAN);', (result, err)=> {
@@ -15,7 +27,7 @@ async function setup(){
         }
         else {
             console.log('Initialize images');
-            fs.readdir('./images', (err, files) => {
+            fs.readdir(images_path, (err, files) => {
                 if (err){
                     throw err;
                 }
@@ -34,7 +46,7 @@ async function setup(){
     });
 }
 
-if (!fs.existsSync('./images.db')){
+if (!fs.existsSync(db_path)){
     setup();
 }
 
@@ -42,9 +54,6 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 
 app.use('/images', express.static('images'));
-
-let config_file = fs.readFileSync('config.json');
-let config = JSON.parse(config_file);
 
 app.get('/', (req, res) => {
     db.get('SELECT name FROM images WHERE classified = 0 ORDER BY name DESC LIMIT 1', (err, result) => {
