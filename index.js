@@ -60,18 +60,34 @@ app.set('view engine', 'html');
 app.use('/images', express.static('images'));
 
 app.get('/', (req, res) => {
-    db.get('SELECT name FROM images WHERE classified = 0 ORDER BY name DESC LIMIT 1', (err, result) => {
-        if (err) {
-            res.send(err);
-        }
-        else if (result) {
-            res.render('index.html', {image: result['name'], classes: config.classes});
-        }
-        else {
-            res.render('none.html', {})
-        }
-    });
-})
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    if (!req.query['name']) {
+        db.get('SELECT name FROM images WHERE classified = 0 ORDER BY name DESC LIMIT 1', (err, result) => {
+            if (err) {
+                res.send(err);
+            }
+            else if (result) {
+                res.redirect('/?name=' + result['name']);
+            }
+            else {
+                res.render('none.html', {})
+            }
+        });
+    } else {
+        db.get('SELECT name, classes FROM images WHERE name = ?', [req.query['name']],  (err, result) => {
+            if (err) {
+                res.send(err);
+            }
+            else if (result) {
+                res.render('index.html', {image: result['name'], classes: config.classes, image_classes: JSON.parse(result['classes'])});
+            }
+            else {
+                res.render('none.html', {})
+            }
+        });
+    }
+    
+});
 
 app.post('classify/:action/:image/:className', (req, res) => {
     console.log(req.params.image + ":" + req.params.className);
@@ -99,7 +115,7 @@ app.post('classify/:action/:image/:className', (req, res) => {
 });
 
 app.get('/next/:image', (req, res) =>{
-    console.log(req.params.image + ":" + req.params.className);
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private')
     var image = req.params.image;
     var classes = new Array(0);
     var query = req.query;
