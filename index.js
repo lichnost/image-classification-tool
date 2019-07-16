@@ -14,15 +14,20 @@ let config_file = fs.readFileSync(config_file_path);
 let config = JSON.parse(config_file);
 
 let images_path = config.images_path;
-let db_path = config.db_path;
+var db_path = config.db_path;
+if (!db_path) {
+    db_path = './images.db';
+}
 
 const sqlite3 = require('sqlite3');
 let db = new sqlite3.Database(db_path);
 
-if (fs.existsSync('./images')) {
-    fs.unlinkSync('./images');
+if (images_path) {
+    if (fs.existsSync('./images')) {
+        fs.unlinkSync('./images');
+    }
+    fs.symlinkSync(images_path, './images');
 }
-fs.symlinkSync(images_path, './images');
 
 async function setup(){
     await db.run('CREATE TABLE IF NOT EXISTS images (name TEXT UNIQUE, classes TEXT, complete DATE, classified BOOLEAN);', (result, err)=> {
@@ -31,7 +36,7 @@ async function setup(){
         }
         else {
             console.log('Initialize images');
-            fs.readdir(images_path, (err, files) => {
+            fs.readdir('./images', (err, files) => {
                 if (err){
                     throw err;
                 }
