@@ -51,6 +51,14 @@
         </form>
         <img class="img-thumbnail" style="height: 90%" src=<%= `/images/${image}` %> >
     </div>
-        
+    <div style="display: none;">
+        <%
+        cache.forEach((invisible) => { 
+        %>
+        <img src=<%= `/images/${invisible['name']}` %> >
+        <%
+        });
+        %>
+    </div>
     </body>
 </html>

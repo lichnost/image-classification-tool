@@ -84,7 +84,13 @@ app.get('/', (req, res) => {
                 res.send(err);
             }
             else if (result) {
-                res.render('index.html', {image: result['name'], classes: config.classes, image_classes: JSON.parse(result['classes'])});
+                db.all('SELECT name FROM images WHERE classified = 0 ORDER BY name DESC LIMIT 4 OFFSET 1', (err1, all) => {
+                    if (all) {
+                        res.render('index.html', {image: result['name'], cache: all, classes: config.classes, image_classes: JSON.parse(result['classes'])});
+                    } else {
+                        res.render('index.html', {image: result['name'], cache: [], classes: config.classes, image_classes: JSON.parse(result['classes'])});
+                    }
+                });
             }
             else {
                 res.render('none.html', {})
