@@ -19,7 +19,8 @@
             <div class="form-check form-check-inline">
                 <input id="class-name" type="checkbox" class="form-check-input" name=<%= elem.name %> 
                 <%
-                if ((image_classes && image_classes.includes(elem.name)) || elem.default) {
+                if ((image_classes && image_classes.includes(elem.name)) ||
+                    (!image_classes && elem.default)) {
                     %>
                     checked
                     <%

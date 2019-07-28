@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const bauth = require('express-basic-auth')
+
 const port = 8090;
 
 let fs = require( 'fs' );
@@ -12,6 +14,14 @@ if (!config_file_path) {
 
 let config_file = fs.readFileSync(config_file_path);
 let config = JSON.parse(config_file);
+
+if (config.auth) {
+    app.use(bauth({
+        users: config.auth,
+        challenge: true
+    }));
+}
+
 
 let images_path = config.images_path;
 var db_path = config.db_path;
